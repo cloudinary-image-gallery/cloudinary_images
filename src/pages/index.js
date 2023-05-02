@@ -12,6 +12,17 @@ import styles from "@styles/Home.module.scss";
 
 export default function Home({ images, nextCursor }) {
     console.log(images, nextCursor);
+    useEffect(() => {
+        (async function run() {
+            const results = await fetch("api/search", {
+                method: 'POST',
+                body: JSON.stringify({
+                    nextCursor
+                })
+            }).then(r => r.json())
+            console.log("results",results);
+        })()
+    },[])
     return (
         <Layout>
             <Head>
@@ -53,7 +64,7 @@ export const getStaticProps = async () => {
     const { resources, next_cursor: nextCursor } = response;
 
     const images = mapImgResources(resources);
-    
+
     return {
         props: {
             images,

@@ -1,6 +1,16 @@
-export const search = async () => {
+export const search = async (options = {}) => {
+    const params = {
+        ...options
+    };
+
+    if (options.nextCursor) {
+        params.next_cursor = options.nextCursor;
+        delete params.nextCursor
+    }
+
+    const paramString = Object.keys(params).map(key => `${key}=${encodeURIComponent(params[key])}`).join('&')
     const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/image`,
+        `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/image?${paramString}`,
         {
             headers: {
                 Authorization: `Basic ${Buffer.from(
