@@ -14,3 +14,14 @@ export const search = async () => {
 
     return response;
 };
+
+export const mapImgResources = (resources) => {
+    return resources.map(resource => {
+        return {
+            id: resource.asset_id,
+            image: resource.secure_url,
+            width: resource.width,
+            height: resource.height
+        }
+    })
+} 

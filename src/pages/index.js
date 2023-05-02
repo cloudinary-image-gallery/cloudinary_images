@@ -5,7 +5,7 @@ import Image from "next/image";
 import Layout from "@components/Layout";
 import Container from "@components/Container";
 import Button from "@components/Button";
-import { search } from "@lib/cloudinary";
+import { mapImgResources, search } from "@lib/cloudinary";
 import images from "@data/images";
 
 import styles from "@styles/Home.module.scss";
@@ -52,14 +52,8 @@ export const getStaticProps = async () => {
     
     const { resources, next_cursor: nextCursor } = response;
 
-    const images = resources.map(resource => {
-        return {
-            id: resource.asset_id,
-            image: resource.secure_url,
-            width: resource.width,
-            height: resource.height
-        }
-    })
+    const images = mapImgResources(resources);
+    
     return {
         props: {
             images,
