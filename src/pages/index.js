@@ -5,12 +5,13 @@ import Image from "next/image";
 import Layout from "@components/Layout";
 import Container from "@components/Container";
 import Button from "@components/Button";
-
+import { search } from "@lib/cloudinary";
 import images from "@data/images";
 
 import styles from "@styles/Home.module.scss";
 
-export default function Home() {
+export default function Home({ images, nextCursor }) {
+    console.log(images, nextCursor);
     return (
         <Layout>
             <Head>
@@ -21,7 +22,7 @@ export default function Home() {
             <Container>
                 <h1 className="sr-only">My Images</h1>
 
-                <h2 className={styles.header}>Images</h2>
+                <h2 className={styles.header}>All Images</h2>
 
                 <ul className={styles.images}>
                     {images.map((image) => {
@@ -36,9 +37,6 @@ export default function Home() {
                                             alt=""
                                         />
                                     </div>
-                                    <h3 className={styles.imageTitle}>
-                                        {image.title}
-                                    </h3>
                                 </a>
                             </li>
                         );
@@ -50,15 +48,22 @@ export default function Home() {
 }
 
 export const getStaticProps = async () => {
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/image`, {
-        headers: {
-            Authorization: `Basic ${Buffer.from(process.env.CLOUDINARY_API_KEY + ":" + process.env.CLOUDINARY_API_SECRET).toString("base64")}`
+    const response = await search();
+    
+    const { resources, next_cursor: nextCursor } = response;
+
+    const images = resources.map(resource => {
+        return {
+            id: resource.asset_id,
+            image: resource.secure_url,
+            width: resource.width,
+            height: resource.height
         }
-    }).then(r => r.json());
-    console.log(response);
+    })
     return {
         props: {
-
+            images,
+            nextCursor
         }
     }
 }
