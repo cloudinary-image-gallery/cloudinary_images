@@ -10,19 +10,33 @@ import images from "@data/images";
 
 import styles from "@styles/Home.module.scss";
 
-export default function Home({ images, nextCursor }) {
+export default function Home({
+    images: defaultImages,
+    nextCursor: defaultNextCursor,
+}) {
+    const [images, setImages] = useState(defaultImages);
+    const [nextCursor, setNextCursor] = useState(defaultNextCursor);
     console.log(images, nextCursor);
-    useEffect(() => {
-        (async function run() {
-            const results = await fetch("api/search", {
-                method: 'POST',
-                body: JSON.stringify({
-                    nextCursor
-                })
-            }).then(r => r.json())
-            console.log("results",results);
-        })()
-    },[])
+
+    const handleLoadMore = async (e) => {
+        e.preventDefault();
+        const results = await fetch("api/search", {
+            method: "POST",
+            body: JSON.stringify({
+                nextCursor,
+            }),
+        }).then((r) => r.json());
+        const { resources, next_cursor: updatedNextCursor } = results;
+
+        const images = mapImgResources(resources);
+
+        setImages((prev) => {
+            return [...prev, ...images];
+        });
+
+        setNextCursor(updatedNextCursor);
+    };
+
     return (
         <Layout>
             <Head>
@@ -53,6 +67,9 @@ export default function Home({ images, nextCursor }) {
                         );
                     })}
                 </ul>
+                <p>
+                    <Button onClick={handleLoadMore}>Load More Photos</Button>
+                </p>
             </Container>
         </Layout>
     );
@@ -60,7 +77,7 @@ export default function Home({ images, nextCursor }) {
 
 export const getStaticProps = async () => {
     const response = await search();
-    
+
     const { resources, next_cursor: nextCursor } = response;
 
     const images = mapImgResources(resources);
@@ -68,7 +85,7 @@ export const getStaticProps = async () => {
     return {
         props: {
             images,
-            nextCursor
-        }
-    }
-}
+            nextCursor,
+        },
+    };
+};
