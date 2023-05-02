@@ -5,7 +5,7 @@ import Image from "next/image";
 import Layout from "@components/Layout";
 import Container from "@components/Container";
 import Button from "@components/Button";
-import { mapImgResources, search } from "@lib/cloudinary";
+import { mapImgResources, search, getFolders } from "@lib/cloudinary";
 import images from "@data/images";
 
 import styles from "@styles/Home.module.scss";
@@ -13,10 +13,11 @@ import styles from "@styles/Home.module.scss";
 export default function Home({
     images: defaultImages,
     nextCursor: defaultNextCursor,
+    folders,
 }) {
     const [images, setImages] = useState(defaultImages);
     const [nextCursor, setNextCursor] = useState(defaultNextCursor);
-    console.log(images, nextCursor);
+    const [activeFolder, setActiveFolder] = useState("");
 
     const handleLoadMore = async (e) => {
         e.preventDefault();
@@ -24,6 +25,7 @@ export default function Home({
             method: "POST",
             body: JSON.stringify({
                 nextCursor,
+                expression: `folder="${activeFolder}"`
             }),
         }).then((r) => r.json());
         const { resources, next_cursor: updatedNextCursor } = results;
@@ -37,6 +39,34 @@ export default function Home({
         setNextCursor(updatedNextCursor);
     };
 
+    const handleOnfolderClick = (e) => {
+        const folderPath = e.target.dataset.folderPath;
+        setActiveFolder(folderPath);
+        setNextCursor(undefined);
+        setImages([]);
+    };
+
+    useEffect(() => {
+        (async function run() {
+            const results = await fetch("api/search", {
+                method: "POST",
+                body: JSON.stringify({
+                    nextCursor,
+                    expression: `folder="${activeFolder}"`
+                }),
+            }).then((r) => r.json());
+            const { resources, next_cursor: updatedNextCursor } = results;
+
+            const images = mapImgResources(resources);
+
+            setImages((prev) => {
+                return [...prev, ...images];
+            });
+
+            setNextCursor(updatedNextCursor);
+        })();
+    }, [activeFolder]);
+
     return (
         <Layout>
             <Head>
@@ -46,6 +76,20 @@ export default function Home({
 
             <Container>
                 <h1 className="sr-only">My Images</h1>
+
+                <h2 className={styles.header}>Albums</h2>
+
+                <ul className={styles.folders} onClick={handleOnfolderClick}>
+                    {folders.map((folder) => {
+                        return (
+                            <li key={folder.path}>
+                                <button data-folder-path={folder.path}>
+                                    {folder.name}
+                                </button>
+                            </li>
+                        );
+                    })}
+                </ul>
 
                 <h2 className={styles.header}>All Images</h2>
 
@@ -76,16 +120,21 @@ export default function Home({
 }
 
 export const getStaticProps = async () => {
-    const response = await search();
+    const results = await search({
+        expression: 'folder=""'
+    });
 
-    const { resources, next_cursor: nextCursor } = response;
+    const { resources, next_cursor: nextCursor } = results;
 
     const images = mapImgResources(resources);
+
+    const { folders } = await getFolders();
 
     return {
         props: {
             images,
-            nextCursor,
+            nextCursor: nextCursor || false,
+            folders,
         },
     };
 };
