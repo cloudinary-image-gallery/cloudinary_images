@@ -9,6 +9,7 @@ import { mapImgResources, search, getFolders } from "@lib/cloudinary";
 import images from "@data/images";
 
 import styles from "@styles/Home.module.scss";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 export default function Home({
     images: defaultImages,
@@ -25,7 +26,7 @@ export default function Home({
             method: "POST",
             body: JSON.stringify({
                 nextCursor,
-                expression: `folder="${activeFolder}"`
+                expression: `folder="${activeFolder}"`,
             }),
         }).then((r) => r.json());
         const { resources, next_cursor: updatedNextCursor } = results;
@@ -41,6 +42,9 @@ export default function Home({
 
     const handleOnfolderClick = (e) => {
         const folderPath = e.target.dataset.folderPath;
+        if (folderPath == activeFolder) {
+            return;
+        }
         setActiveFolder(folderPath);
         setNextCursor(undefined);
         setImages([]);
@@ -52,7 +56,7 @@ export default function Home({
                 method: "POST",
                 body: JSON.stringify({
                     nextCursor,
-                    expression: `folder="${activeFolder}"`
+                    expression: `folder="${activeFolder}"`,
                 }),
             }).then((r) => r.json());
             const { resources, next_cursor: updatedNextCursor } = results;
@@ -90,29 +94,29 @@ export default function Home({
                         );
                     })}
                 </ul>
-
-                <h2 className={styles.header}>All Images</h2>
-
-                <ul className={styles.images}>
-                    {images.map((image) => {
-                        return (
-                            <li key={image.id}>
-                                <a href={image.link} rel="noreferrer">
-                                    <div className={styles.imageImage}>
-                                        <Image
-                                            width={image.width}
-                                            height={image.height}
-                                            src={image.image}
-                                            alt=""
-                                        />
-                                    </div>
-                                </a>
-                            </li>
-                        );
-                    })}
-                </ul>
+                <ResponsiveMasonry
+                    columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+                >
+                    <Masonry gutter="10px">
+                        {images.map((image) => {
+                            return (
+                                <Image
+                                    key={image.id}
+                                    width={image.width}
+                                    height={image.height}
+                                    src={image.image}
+                                    alt=""
+                                />
+                            );
+                        })}
+                    </Masonry>
+                </ResponsiveMasonry>
                 <p>
-                    <Button onClick={handleLoadMore}>Load More Photos</Button>
+                    {nextCursor ? (
+                        <Button onClick={handleLoadMore}>
+                            Load More Photos
+                        </Button>
+                    ) : null}
                 </p>
             </Container>
         </Layout>
@@ -121,7 +125,7 @@ export default function Home({
 
 export const getStaticProps = async () => {
     const results = await search({
-        expression: 'folder=""'
+        expression: 'folder=""',
     });
 
     const { resources, next_cursor: nextCursor } = results;
