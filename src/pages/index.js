@@ -9,6 +9,7 @@ import { mapImgResources, search, getFolders } from "@lib/cloudinary";
 
 import styles from "@styles/Home.module.scss";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import MainNavigation from "@components/Navigation/MainNavigation";
 
 export default function Home({
     images: defaultImages,
@@ -73,14 +74,12 @@ export default function Home({
     return (
         <Layout>
             <Head>
-                <title>My Images</title>
+                <title>Noël Fotos</title>
                 <meta name="description" content="All of my cool images." />
             </Head>
-
+            <MainNavigation />
             <Container>
-                <h1 className="sr-only">My Images</h1>
-
-                <h2 className={styles.header}>Albums</h2>
+                <h1 className="text-center">Albums</h1>
 
                 <ul className={styles.folders} onClick={handleOnfolderClick}>
                     {folders.map((folder) => {

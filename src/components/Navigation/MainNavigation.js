@@ -10,7 +10,7 @@ const MainNavigation = () => {
                 key={false}
                 bg="light"
                 expand={false}
-                className="p-3 mb-5 shadow sticky-top"
+                className="p-3 mb-4 shadow sticky-top"
             >
                 <Container fluid>
                     <Navbar.Brand href="/">Noël Fotos</Navbar.Brand>
@@ -26,12 +26,11 @@ const MainNavigation = () => {
                             <Offcanvas.Title
                                 id={`offcanvasNavbarLabel-expand-${false}`}
                             >
-                                Noël Fotos
+                                Albums
                             </Offcanvas.Title>
                         </Offcanvas.Header>
                         <Offcanvas.Body>
                             <Nav className="justify-content-end flex-grow-1 pe-3">
-                                <Nav.Link href="/">Home</Nav.Link>
                                 <Nav.Link href="/events">Events</Nav.Link>
                                 <Nav.Link href="#">Men</Nav.Link>
                                 <Nav.Link href="#">Women</Nav.Link>
