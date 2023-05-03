@@ -1,6 +1,5 @@
 import Head from 'next/head';
-
-import Header from '@components/Header';
+import Navbar from '@components/Navigation'
 import Footer from '@components/Footer';
 
 import styles from './Layout.module.scss';
@@ -17,7 +16,7 @@ const Layout = ({ children, className, ...rest }) => {
       <Head>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <Navbar />
       <main className={styles.main}>{ children }</main>
       <Footer />
     </div>

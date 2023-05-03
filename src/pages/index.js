@@ -6,7 +6,6 @@ import Layout from "@components/Layout";
 import Container from "@components/Container";
 import Button from "@components/Button";
 import { mapImgResources, search, getFolders } from "@lib/cloudinary";
-import images from "@data/images";
 
 import styles from "@styles/Home.module.scss";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
