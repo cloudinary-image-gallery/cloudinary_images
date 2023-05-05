@@ -9,7 +9,7 @@ const MainNavigation = (props) => {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    
+
     return (
         <>
             <Navbar
@@ -53,6 +53,3 @@ const MainNavigation = (props) => {
 };
 
 export default MainNavigation;
-{
-    /*  */
-}
