@@ -36,6 +36,38 @@
 
 }
 
+.navFolders {
+  text-align: center;
+
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2em 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 1em;
+
+  li {
+    display: flex;
+    justify-content: center;
+  }
+
+  button {
+    display: block;
+    width: 75%;
+    padding: 1em;
+    background: white;
+    border: none;
+    cursor: pointer;
+    border-bottom: solid 2px white;
+
+    &:hover,
+    &[data-active-folder="true"] {
+      border-color: blueviolet;
+    }
+  }
+
+}
+
 .images {
   list-style: none;
   padding: 0;

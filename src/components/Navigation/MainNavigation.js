@@ -1,46 +1,58 @@
+import { useState } from "react";
 import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import styles from "@styles/Home.module.scss";
 
-const MainNavigation = () => {
-  return (
-    <>
+const MainNavigation = (props) => {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    
+    return (
+        <>
             <Navbar
-                key={false}
                 bg="light"
                 expand={false}
                 className="p-3 mb-4 shadow sticky-top"
             >
                 <Container fluid>
                     <Navbar.Brand href="/">Noël Fotos</Navbar.Brand>
-                    <Navbar.Toggle
-                        aria-controls={`offcanvasNavbar-expand-${false}`}
-                    />
-                    <Navbar.Offcanvas
-                        id={`offcanvasNavbar-expand-${false}`}
-                        aria-labelledby={`offcanvasNavbarLabel-expand-${false}`}
-                        placement="end"
-                    >
+                    <Navbar.Toggle onClick={handleShow} />
+                    <Navbar.Offcanvas placement="end" show={show} onHide={handleClose}>
                         <Offcanvas.Header closeButton>
-                            <Offcanvas.Title
-                                id={`offcanvasNavbarLabel-expand-${false}`}
-                            >
-                                Albums
-                            </Offcanvas.Title>
+                            <Offcanvas.Title>Albums</Offcanvas.Title>
                         </Offcanvas.Header>
                         <Offcanvas.Body>
-                            <Nav className="justify-content-end flex-grow-1 pe-3">
-                                <Nav.Link href="/events">Events</Nav.Link>
-                                <Nav.Link href="#">Men</Nav.Link>
-                                <Nav.Link href="#">Women</Nav.Link>
-                            </Nav>
+                            <ul
+                                className={styles.navFolders}
+                                onClick={props.handleOnfolderClick}
+                            >
+                                {props.folders.map((folder) => {
+                                    return (
+                                        <li
+                                            key={folder.path}
+                                        >
+                                            <button
+                                                data-folder-path={folder.path}
+                                                onClick={handleClose}
+                                            >
+                                                {folder.name}
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                         </Offcanvas.Body>
                     </Navbar.Offcanvas>
                 </Container>
             </Navbar>
         </>
-  )
-}
+    );
+};
 
-export default MainNavigation
+export default MainNavigation;
+{
+    /*  */
+}

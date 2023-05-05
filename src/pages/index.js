@@ -77,7 +77,10 @@ export default function Home({
                 <title>Noël Fotos</title>
                 <meta name="description" content="All of my cool images." />
             </Head>
-            <MainNavigation />
+            <MainNavigation 
+                handleOnfolderClick={handleOnfolderClick} 
+                folders={folders}
+            />
             <Container>
                 <h1 className="text-center">Albums</h1>
 
